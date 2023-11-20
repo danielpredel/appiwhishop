@@ -3,32 +3,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var fs = require('fs');
+var cors = require('cors');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// Rutas
+var usersRouter = require('./routes/user.routes');
 
 var app = express();
-
-var rutaDBOne = process.env.RUTA_DB_ONE;
-var rutaDBTwo = process.env.RUTA_DB_TWO;
-
-// console.log(rutaDBOne);
-// console.log(rutaDBTwo);
-fs.readFile(`${rutaDBOne}/users.json`, 'utf-8', (error, data) => {
-  if (error) {
-    console.error('Error al leer el archivo:', error);
-    return;
-  }
-
-  // Parsea el contenido del JSON
-  const jsonData = JSON.parse(data);
-
-  // Ahora, jsonData contiene el objeto JavaScript correspondiente al JSON
-  console.log(jsonData);
-});
-
-
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+// Declarar rutas
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
