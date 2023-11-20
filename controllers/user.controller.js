@@ -3,59 +3,119 @@ var bcrypt = require('bcrypt');
 var fs = require('fs');
 var files = require('../configs/db.config');
 
-module.exports = {
-    leerArchivo: () => {
-        try{
-            var users = fs.readFileSync(files.usersFile, 'utf8');
-            if(users.length === 0){
-                return null;
+var UserController = {
+    leerArchivo: (callback) => {
+        fs.readFile(files.usersFile, 'utf8', (error, data) => {
+            if (error) {
+                callback({
+                    success: false,
+                    error: JSON.stringify(error)
+                })
+                return;
             }
-            else{
-                return JSON.parse(users);
+            if (data && data.length > 0) {
+                callback({
+                    success: true,
+                    data: JSON.parse(data)
+                });
+                return
             }
-        }
-        catch (error){
-            console.error('Error al leer el archivo', error);
-            return null;
-        }
+            else {
+                callback({
+                    success: true,
+                    data: []
+                });
+                return
+            }
+        });
     },
-    escribirArchivo: (users) => {
-        try{
-            fs.writeFileSync(files.usersFile, JSON.stringify(users, null, 2), 'utf8');
-            return true;
-        }
-        catch(error){
-            console.error('Error al escribir el archivo', error);
-            return -1;
-        }
+    escribirArchivo: (users, callback) => {
+        fs.writeFile(files.usersFile, JSON.stringify(users, null, 2), 'utf8', (error) => {
+            if(error){
+                callback({
+                    success: false,
+                    error: JSON.stringify(error)
+                });
+                return
+            }
+            callback({
+                success: true
+            });
+            return
+        });
     },
     encriptarPassword: (password) => {
         const saltRounds = 10;
         return bcrypt.hashSync(password, saltRounds);
-    },    
-    registro: (username, email, password) => {
-        var users = this.leerArchivo();
-        if(users == null){
-            users = new Array();
-        }
-        users.forEach(user => {
-            if(user.email === email){
-                console.log('Email en uso');
-                return -2;
-            }
-            else{
-                var encPass = this.encriptarPassword(password);
-                var newUser = new User(username, email, encPass);
-                users.push(newUser);
-                var result = this.escribirArchivo(users);
-                return result;
-            }
-        });
     },
-    login: (email, password) => {
-
+    compararPassword: (password, encPass) => {
+        return bcrypt.compareSync(password, encPass);
     },
-    compararPassword: (password) => {
-
+    registro: (username, email, password, callback) => {
+        UserController.leerArchivo((data => {
+            if (data.success === false) {
+                callback(data);
+                return;
+            } 
+            else {
+                var users = data.data;
+                const correoEnUso = users.find(user => user.email === email);
+                if (correoEnUso) {
+                    callback({
+                        success: false,
+                        info: "Email en Uso"
+                    });
+                    return;
+                }
+                else {
+                    var encPass = UserController.encriptarPassword(password);
+                    var newUser = new User(username, email, encPass);
+                    users.push(newUser);
+                    UserController.escribirArchivo(users, (data => {
+                        callback(data);
+                        return;
+                    }));
+                }
+            }
+        }));
+    },
+    login: (email, password, callback) => {
+        UserController.leerArchivo((data => {
+            if (data.success === false) {
+                callback(data);
+                return;
+            }
+            else {
+                var users = data.data;
+                const usuario = users.find(user => user.email === email);
+                if (usuario) {
+                    var encPass = usuario.password;
+                    if(UserController.compararPassword(password, encPass)){
+                        callback({
+                            success: true,
+                            userID: usuario.id,
+                            username: usuario.username
+                        });
+                        return;
+                    }
+                    else{
+                        callback({
+                            success: false,
+                            info: 'Password Incorrecto'
+                        });
+                        return;
+                    }
+                }
+                else{
+                    callback({
+                        success: false,
+                        info: 'Correo no Encontrado'
+                    });
+                    return;
+                }
+            }
+        }));
     }
 }
+
+module.exports = UserController;

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var userController = require('../controllers/user.controller');
+var UserController = require('../controllers/user.controller');
 
 var {
 	body,
@@ -15,48 +15,51 @@ router.post('/registro', [
 ], (req, res) => {
   	const errors = validationResult(req);
 	if(!errors.isEmpty()){
-		res.json({
+		res.status(400).json({
 			success: false,
 			error: JSON.stringify(errors)
-		})
-		return
+		});
 	}
 	let username = req.body.username;
 	let email = req.body.email;
 	let password = req.body.password;
-	var result = userController.registro(username, email, password);
-	console.log(result);
-	if(result === true){
-		res.json({
-			success: true
-		});
-	}
-	else if(result == -1){
-		res.json({
-			success: false,
-			error: "Error al escribir el archivo"
-		});
-	}
-	else if(result == -2){
-		res.json({
-			success: false,
-			error: "Email en uso"
-		});
-	}
+	UserController.registro(username, email, password, (data => {
+		if(data.success == true){
+			res.json(data);
+		}
+		else{
+			res.json(data);
+		}
+	}));
 });
 
-router.get('/getAll', function(req, res, next) {
-	var userController = new UserController();
-	users = userController.leerArchivo();
-	if(users == null){
-		res.json({
-			array: null
+router.post('/login', [
+	body('email').not().isEmpty().isString(),
+	body('password').not().isEmpty().isString()
+], (req, res) => {
+  	const errors = validationResult(req);
+	if(!errors.isEmpty()){
+		res.status(400).json({
+			success: false,
+			error: JSON.stringify(errors)
 		});
 	}
-	else{
-		res.json(users);
-	}
-	// res.json();
+	let email = req.body.email;
+	let password = req.body.password;
+	UserController.login(email, password, (data => {
+		if(data.success == true){
+			res.json(data);
+		}
+		else{
+			res.json(data);
+		}
+	}));
+});
+
+router.get('/getAll', (req, res) => {
+	UserController.leerArchivo(data => {
+		res.json(data);
+	});
 });
 
 module.exports = router;
