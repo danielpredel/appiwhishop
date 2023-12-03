@@ -17,7 +17,7 @@ router.post('/registro', [
 	if(!errors.isEmpty()){
 		res.status(400).json({
 			success: false,
-			error: JSON.stringify(errors)
+			error: errors
 		});
 	}
 	let username = req.body.username;
@@ -41,7 +41,7 @@ router.post('/login', [
 	if(!errors.isEmpty()){
 		res.status(400).json({
 			success: false,
-			error: JSON.stringify(errors)
+			error: errors
 		});
 	}
 	let email = req.body.email;
