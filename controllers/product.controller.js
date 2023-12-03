@@ -1,10 +1,11 @@
 var WalmartController = require('./walmart.controller');
 var AmazonController = require('./amazon.controller');
+var HistoryController = require('./history.controller');
 
 var ProductController = {
-    search: async (keyword) => {
+    search: async (keyword, userID) => {
+        HistoryController.escribirArchivo(userID,keyword);
         try {
-            // Realizar ambas llamadas de manera concurrente
             const [walmartResults, amazonResults] = await Promise.all([
                 WalmartController.search(keyword),
                 AmazonController.search(keyword),

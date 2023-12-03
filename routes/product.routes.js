@@ -10,8 +10,9 @@ var {
 	validationResult
 } = require('express-validator');
 
-router.get('/search/:keyword',  [
-	param('keyword').not().isEmpty().isString()
+router.get('/search/:keyword/:userID',  [
+	param('keyword').not().isEmpty().isString(),
+	param('userID').not().isEmpty().isString()
 ], (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -22,15 +23,10 @@ router.get('/search/:keyword',  [
     }
     else{
         let keyword = req.params.keyword;
-        ProductController.search(keyword).then((data) => {
+        let userID = req.params.userID;
+        ProductController.search(keyword, userID).then((data) => {
             res.json(data);
         });
-        // WalmartController.search(keyword).then((data) => {
-        //     res.json(data);
-        // });
-        // AmazonController.search(keyword, data => {
-        //     res.json(data);
-        // });
     }
 });
 
