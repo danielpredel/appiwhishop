@@ -10,7 +10,7 @@ var HistoryController = {
                     reject(error);
                 }
                 else{
-                    resolve(JSON.parse(data));
+                    resolve(data);
                 }
             });
         });
@@ -18,6 +18,7 @@ var HistoryController = {
     escribirArchivo: (userID, product) => {
         HistoryController.leerArchivo().then((data) => {
             if(data && data.length > 0){
+                data = JSON.parse(data);
                 var index = data.findIndex(item => item.userID === userID);
                 if(index !== -1){
                     data[index].history.push(product);

@@ -111,7 +111,7 @@ var WalmartController = {
         //     }
         // });
     },
-    searchById: (itemId, callback) => {
+    searchById: (itemId) => {
 
     }
 }

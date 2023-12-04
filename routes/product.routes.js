@@ -1,7 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var WalmartController = require('../controllers/walmart.controller');
-var AmazonController = require('../controllers/amazon.controller');
 var ProductController = require('../controllers/product.controller');
 
 var {
