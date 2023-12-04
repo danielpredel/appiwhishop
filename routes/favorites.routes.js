@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var FavoritesController = require('../controllers/favorites.controller');
+var ProductController = require('../controllers/product.controller');
 var Product = require('../models/product.model');
 
 var {
@@ -27,22 +28,23 @@ router.post('/add', [
 			error: errors
 		});
 	}
-    var idFromStore = req.body.idFromStore;
-    var name =  req.body.name;
-    var price = req.body.price;
-    var listPrice = req.body.listPrice;
-    var store = req.body.store;
-    var img = req.body.img;
-    var url = req.body.url;
-    var userID = req.body.userID;
-    // Esto en el controlador
-    // var product = new Product(idFromStore, name, price, listPrice, store, img, url);
-    /**
-     * Crear un Objeto Product
-     * Guardar dicho objeto en el archivo products.json
-     * obtener el id del objeto product
-     * alamcenar el id del objeto en el array de favoritos del usuario
-     */
+    else{
+        var idFromStore = req.body.idFromStore;
+        var name =  req.body.name;
+        var price = req.body.price;
+        var listPrice = req.body.listPrice !== undefined ? req.body.listPrice : null;
+        var store = req.body.store;
+        var img = req.body.img;
+        var url = req.body.url;
+        var product = new Product(idFromStore, name, price, listPrice, store, img, url);
+        ProductController.addProduct(product);
+        var userID = req.body.userID;
+        var productID = product.id;
+        FavoritesController.addProduct(userID, productID);
+        res.json({
+            success: true
+        });
+    }
 });
 
 router.get('/get/:userID',  [

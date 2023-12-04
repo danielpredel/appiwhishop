@@ -15,7 +15,14 @@ var HistoryController = {
             });
         });
     },
-    escribirArchivo: (userID, product) => {
+    escribirArchivo: (data) => {
+        fs.writeFile(files.historyFile, JSON.stringify(data, null, 2), 'utf8', (error) => {
+            if(error){
+                console.error(error);
+            }
+        });
+    },
+    addProduct: (userID, product) => {
         HistoryController.leerArchivo().then((data) => {
             if(data && data.length > 0){
                 data = JSON.parse(data);
@@ -33,11 +40,12 @@ var HistoryController = {
                 var history = new History(userID, [product]);
                 data.push(history);
             }
-            fs.writeFile(files.historyFile, JSON.stringify(data, null, 2), 'utf8', (error) => {
-                if(error){
-                    console.error(error);
-                }
-            });
+            HistoryController.escribirArchivo(data);
+            // fs.writeFile(files.historyFile, JSON.stringify(data, null, 2), 'utf8', (error) => {
+            //     if(error){
+            //         console.error(error);
+            //     }
+            // });
         });
     },
     getHistory: (userID) => {

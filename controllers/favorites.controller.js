@@ -10,17 +10,25 @@ var FavoritesController = {
                     reject(error);
                 }
                 else{
-                    resolve(JSON.parse(data));
+                    resolve(data);
                 }
             });
         });
     },
-    escribirArchivo: (userID, productID) => {
+    escribirArchivo: (data) => {
+        fs.writeFile(files.favoritesFile, JSON.stringify(data, null, 2), 'utf8', (error) => {
+            if(error){
+                console.error(error);
+            }
+        });
+    },
+    addProduct: (userID, productID) => {
         FavoritesController.leerArchivo().then((data) => {
             if(data && data.length > 0){
+                data = JSON.parse(data);
                 var index = data.findIndex(item => item.userID === userID);
                 if(index !== -1){
-                    data[index].favorites.push(productID);
+                    data[index].products.push(productID);
                 }
                 else{
                     var favorites = new Favorites(userID, [productID]);
@@ -32,12 +40,17 @@ var FavoritesController = {
                 var favorites = new Favorites(userID, [productID]);
                 data.push(favorites);
             }
-            fs.writeFile(files.favoritesFile, JSON.stringify(data, null, 2), 'utf8', (error) => {
-                if(error){
-                    console.error(error);
-                }
-            });
+            FavoritesController.escribirArchivo(data);
         });
+    },
+    getProducts: (userID) => {
+
+    },
+    deleteProduct: (userID) => {
+
+    },
+    deleteAll: (userID) => {
+        
     }
 }
 

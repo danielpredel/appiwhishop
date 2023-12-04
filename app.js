@@ -8,6 +8,7 @@ var cors = require('cors');
 // Rutas
 var usersRouter = require('./routes/user.routes');
 var productRouter = require('./routes/product.routes');
+var favoritesRouter = require('./routes/favorites.routes');
 
 var app = express();
 app.use(cors());
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Declarar rutas
 app.use('/users', usersRouter);
 app.use('/product', productRouter);
+app.use('/favorites',favoritesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
