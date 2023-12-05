@@ -33,15 +33,6 @@ var AmazonController = {
                     }
                     var img = item?.image;
                     var url = item?.link;
-                    // return {
-                    //     idFromStore: idFromStore,
-                    //     name: name,
-                    //     price: price,
-                    //     listPrice: listPrice,
-                    //     store: 'Amazon',
-                    //     img: img,
-                    //     url: url
-                    // };
                     return new Product(idFromStore, name, price, listPrice, 'Amazon', img, url);
                 });
                 return {

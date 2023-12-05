@@ -56,10 +56,10 @@ router.post('/login', [
 	}));
 });
 
-router.get('/getAll', (req, res) => {
-	UserController.leerArchivo(data => {
-		res.json(data);
-	});
-});
+// router.get('/getAll', (req, res) => {
+// 	UserController.leerArchivo(data => {
+// 		res.json(data);
+// 	});
+// });
 
 module.exports = router;
