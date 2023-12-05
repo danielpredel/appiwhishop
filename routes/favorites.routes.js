@@ -10,8 +10,8 @@ var {
 	validationResult
 } = require('express-validator');
 
-// idFromStore, name, price, listPrice, store, img, url
 router.post('/add', [
+	body('id').not().isEmpty().isString(),
 	body('idFromStore').not().isEmpty().isString(),
 	body('name').not().isEmpty().isString(),
 	body('price').not().isEmpty().isNumeric(),
@@ -29,6 +29,7 @@ router.post('/add', [
 		});
 	}
     else{
+        var id = req.body.id;
         var idFromStore = req.body.idFromStore;
         var name =  req.body.name;
         var price = req.body.price;
@@ -37,6 +38,7 @@ router.post('/add', [
         var img = req.body.img;
         var url = req.body.url;
         var product = new Product(idFromStore, name, price, listPrice, store, img, url);
+        product.id = id;
         ProductController.addProduct(product);
         var userID = req.body.userID;
         var productID = product.id;
