@@ -87,32 +87,65 @@ var ProductController = {
             ProductController.escribirArchivo(data);
         });
     },
-    get: (productIDs, callback) => {
-        ProductController.leerArchivo().then((data) => {
+    get: async (productIDs) => {
+        try{
+            var data = await ProductController.leerArchivo();
             if(data && data.length > 0){
                 data = JSON.parse(data);
                 var products = data.filter(product => productIDs.includes(product.id));
                 if(products.length > 0){
-                    callback({
+                    return {
                         success: true,
                         products: products
-                    });
+                    };
                 }
                 else{
-                    callback({
+                    return {
                         success: false,
-                        error: 'Sin Productos'
-                    });
+                        error: 'No se encontraron los productos'
+                    };
                 }
             }
             else{
-                callback({
+                return {
                     success: false,
                     error: 'Sin Productos'
-                });
+                };
             }
-        });
-    }
+        }
+        catch(error){
+            return {
+                success: false,
+                error: error
+            }
+        }
+    },
+    // get: (productIDs, callback) => {
+    //     ProductController.leerArchivo().then((data) => {
+    //         if(data && data.length > 0){
+    //             data = JSON.parse(data);
+    //             var products = data.filter(product => productIDs.includes(product.id));
+    //             if(products.length > 0){
+    //                 callback({
+    //                     success: true,
+    //                     products: products
+    //                 });
+    //             }
+    //             else{
+    //                 callback({
+    //                     success: false,
+    //                     error: 'No se encontraron los productos'
+    //                 });
+    //             }
+    //         }
+    //         else{
+    //             callback({
+    //                 success: false,
+    //                 error: 'Sin Productos'
+    //             });
+    //         }
+    //     });
+    // }
 }
 
 module.exports = ProductController;

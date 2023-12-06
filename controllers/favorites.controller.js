@@ -51,9 +51,12 @@ var FavoritesController = {
                 var index = data.findIndex(item => item.userID === userID);
                 if(index !== -1){
                     var ids = data[index].products;
-                    ProductController.get(ids, (results) => {
+                    // ProductController.get(ids, (results) => {
+                    //     callback(results);
+                    // });
+                    ProductController.get(ids).then((results) => {
                         callback(results);
-                    });
+                    })
                 }
                 else{
                     callback({

@@ -49,7 +49,7 @@ router.get('/get/:userID',  [
     }
 });
 
-router.post('/add', [
+router.post('/add', [ 
 	body('id').not().isEmpty().isString(),
 	body('idFromStore').not().isEmpty().isString(),
 	body('name').not().isEmpty().isString(),
@@ -79,11 +79,13 @@ router.post('/add', [
         var url = req.body.url;
         var product = new Product(idFromStore, name, price, listPrice, store, img, url);
         product.id = id;
-        ProductController.addProduct(product);
         var userID = req.body.userID;
 		var listID = req.body.listID;
         var productID = product.id;
         ListsController.addProduct(userID, listID, productID, (data) => {
+			if(data.success === true) {
+				ProductController.addProduct(product);
+			}
 			res.json(data);
 		});
     }
