@@ -52,8 +52,41 @@ var ProductController = {
             };
         }
     },
-    searchById: (itemId, callback ) => {
-
+    trackProducts: async () => {
+        try{
+            var data = await ProductController.leerArchivo();
+            if(data && data.length > 0){
+                data = JSON.parse(data);
+                // map(async como en lists.getLists)
+                var results = data.map(element => {
+                    if(element.store == 'Amazon'){
+                        console.log('ASIN: ' + element.idFromStore + ', Precio:' + element.price);
+                        // crear nuevo producto con price si es success es true
+                        // searchById de amazon
+                    }
+                    else if(element.store == 'Walmart'){
+                        console.log('itemID: ' + element.idFromStore + ', Precio:' + element.price);
+                        // searchById de walmart
+                    }
+                });
+                return {
+                    success: true,
+                    products: data
+                };
+            }
+            else{
+                return {
+                    success: false,
+                    error: 'Sin Productos'
+                };
+            }
+        }
+        catch(error){
+            return {
+                success: false,
+                error: error
+            };
+        }
     },
     leerArchivo: () => {
         return new Promise((resolve, reject) => {

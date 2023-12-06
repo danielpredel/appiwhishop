@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var ProductController = require('../controllers/product.controller');
+var WalmartController = require('../controllers/walmart.controller');
+var AmazonController = require('../controllers/amazon.controller');
 
 var {
 	body,
@@ -27,5 +29,21 @@ router.get('/search/:keyword/:userID',  [
         });
     }
 });
+
+router.get('/track', (req, res) => {
+    // let id = "862865629";    // walmart
+    let id = "B0BMTBHH8F";    // amazon
+
+    AmazonController.searchById(id).then((data) => {
+        res.json(data);
+    });
+    // WalmartController.searchById(id).then((data) => {
+    //     res.json(data);
+    // });
+    // ProductController.trackProducts().then((data) => {
+    //     res.json(data);
+    // });
+});
+
 
 module.exports = router;

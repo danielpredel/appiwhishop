@@ -50,8 +50,51 @@ var WalmartController = {
             }
         }
     },
-    searchById: (itemId) => {
-
+    searchById: async (itemId) => {
+        const params = {
+            api_key: `${apiKey}`,
+            type: "product",
+            item_id: `${itemId}`,
+            output: "json"
+        };
+        try{
+            var response = await axios.get('https://api.bluecartapi.com/request', { params });
+            var data = response.data;
+            var status = data?.request_info?.success;
+            if(status === true){
+                var item_id = data?.product?.item_id;
+                if(item_id == itemID){
+                    var price = data?.buybox_winner?.price;
+                    if (price === undefined){
+                        price = null;
+                    }
+                    return {
+                        success: true,
+                        idFromStore: itemID,
+                        price: price
+                    }
+                }
+                else{
+                    return {
+                        success: false,
+                        error: `Error al consultar producto con item_id: ${itemId}`
+                    }
+                }
+            }
+            else{
+                return {
+                    success: false,
+                    error: `Error al consultar producto con item_id: ${itemId}`,
+                    info: data
+                }
+            }
+        }
+        catch(error) {
+            return {
+                success: false,
+                error: error
+            };
+        }
     }
 }
 

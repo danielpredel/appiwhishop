@@ -55,8 +55,52 @@ var AmazonController = {
             }
         }
     },
-    searchById: (itemId, callback ) => {
-
+    searchById: async (asin) => {
+        const params = {
+            api_key: `${apiKey}`,
+            amazon_domain: "amazon.com",
+            asin: `${asin}`,
+            type: "product",
+            output: "json"
+        }
+        try{
+            var response = await axios.get('https://api.rainforestapi.com/request', { params });
+            var data = response.data;
+            var status = data?.request_info?.success;
+            if(status === true){
+                var ASIN_id = data?.product?.asin;
+                if(ASIN_id == asin){
+                    var price = data?.product?.buybox_winner?.price?.value;
+                    if (price === undefined){
+                        price = null;
+                    }
+                    return {
+                        success: true,
+                        idFromStore: asin,
+                        price: price
+                    }
+                }
+                else{
+                    return {
+                        success: false,
+                        error: `Error al consultar producto con asin: ${itemId}`
+                    }
+                }
+            }
+            else{
+                return {
+                    success: false,
+                    error: `Error al consultar producto con asin: ${itemId}`,
+                    info: data
+                }
+            }
+        }
+        catch(error){
+            return {
+                success: false,
+                error: error.message
+            };
+        } 
     }
 }
 
