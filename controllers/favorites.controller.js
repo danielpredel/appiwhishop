@@ -1,6 +1,7 @@
 var fs = require('fs');
 var files = require('../configs/db.config');
 var Favorites = require('../models/favorites.model');
+var ProductController = require('./product.controller');
 
 var FavoritesController = {
     leerArchivo: () => {
@@ -43,8 +44,37 @@ var FavoritesController = {
             FavoritesController.escribirArchivo(data);
         });
     },
-    getProducts: (userID) => {
-
+    getProducts: (userID, callback) => {
+        FavoritesController.leerArchivo().then((data) => {
+            if(data && data.length > 0){
+                data = JSON.parse(data);
+                var index = data.findIndex(item => item.userID === userID);
+                if(index !== -1){
+                    var ids = data[index].products;
+                    ProductController.get(ids, (results) => {
+                        callback(results);
+                    });
+                }
+                else{
+                    callback({
+                        success: false,
+                        error: 'Sin Productos'
+                    });
+                }
+            }
+            else{
+                callback({
+                    success: false,
+                    error: 'Sin Productos'
+                });
+            }
+        })
+        .catch((error) => {
+            callback({
+                success: false,
+                error: error
+            });
+        });
     },
     deleteProduct: (userID) => {
 

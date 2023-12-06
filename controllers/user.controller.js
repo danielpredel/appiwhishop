@@ -34,7 +34,7 @@ var UserController = {
             if(error){
                 callback({
                     success: false,
-                    error: JSON.stringify(error)
+                    error: error
                 });
                 return
             }
@@ -63,7 +63,7 @@ var UserController = {
                 if (correoEnUso) {
                     callback({
                         success: false,
-                        info: "Email en Uso"
+                        error: "Email en Uso"
                     });
                     return;
                 }
@@ -101,7 +101,7 @@ var UserController = {
                     else{
                         callback({
                             success: false,
-                            info: 'Password Incorrecto'
+                            error: 'Password Incorrecto'
                         });
                         return;
                     }
@@ -109,7 +109,7 @@ var UserController = {
                 else{
                     callback({
                         success: false,
-                        info: 'Correo no Encontrado'
+                        error: 'Correo no Encontrado'
                     });
                     return;
                 }

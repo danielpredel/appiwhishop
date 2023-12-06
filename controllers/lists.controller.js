@@ -84,14 +84,14 @@ var ListsController = {
                 else{
                     callback({
                         success: false,
-                        info: 'Sin listas'
+                        error: 'Sin listas'
                     });
                 }
             }
             else{
                 callback({
                     success: false,
-                    info: 'Sin listas'
+                    error: 'Sin listas'
                 });
             }
         })

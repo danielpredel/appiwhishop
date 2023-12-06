@@ -49,7 +49,7 @@ router.post('/add', [
     }
 });
 
-router.get('/get/:userID',  [
+router.get('/get/:userID', [
 	param('userID').not().isEmpty().isString()
 ], (req, res) => {
     const errors = validationResult(req);
@@ -61,11 +61,13 @@ router.get('/get/:userID',  [
     }
     else{
         let userID = req.params.userID;
-        // Retornar productos favoritos del usuario
+        FavoritesController.getProducts(userID, (data) => {
+            res.json(data);
+        });
     }
 });
 
-router.delete('/delete/:userID/:productID',  [
+router.delete('/delete/:userID/:productID', [
 	param('userID').not().isEmpty().isString(),
 	param('productID').not().isEmpty().isString()
 ], (req, res) => {
@@ -96,6 +98,6 @@ router.delete('/deleteAll/:userID',  [
         let userID = req.params.userID;
         // Eliminar todos los productos favoritos de tal usuario
     }
-});
+}); 
 
 module.exports = router;
