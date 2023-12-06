@@ -41,11 +41,6 @@ var HistoryController = {
                 data.push(history);
             }
             HistoryController.escribirArchivo(data);
-            // fs.writeFile(files.historyFile, JSON.stringify(data, null, 2), 'utf8', (error) => {
-            //     if(error){
-            //         console.error(error);
-            //     }
-            // });
         });
     },
     getHistory: (userID) => {

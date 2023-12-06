@@ -119,33 +119,7 @@ var ProductController = {
                 error: error
             }
         }
-    },
-    // get: (productIDs, callback) => {
-    //     ProductController.leerArchivo().then((data) => {
-    //         if(data && data.length > 0){
-    //             data = JSON.parse(data);
-    //             var products = data.filter(product => productIDs.includes(product.id));
-    //             if(products.length > 0){
-    //                 callback({
-    //                     success: true,
-    //                     products: products
-    //                 });
-    //             }
-    //             else{
-    //                 callback({
-    //                     success: false,
-    //                     error: 'No se encontraron los productos'
-    //                 });
-    //             }
-    //         }
-    //         else{
-    //             callback({
-    //                 success: false,
-    //                 error: 'Sin Productos'
-    //             });
-    //         }
-    //     });
-    // }
+    }
 }
 
 module.exports = ProductController;

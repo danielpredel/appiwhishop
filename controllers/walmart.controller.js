@@ -29,15 +29,6 @@ var WalmartController = {
                     }
                     var img = item?.product?.main_image;
                     var url = item?.product?.link;
-                    // return {
-                        // idFromStore: idFromStore,
-                        // name: name,
-                        // price: price,
-                        // listPrice: listPrice,
-                        // store: 'Walmart',
-                        // img: img,
-                        // url: url
-                    // };
                     return new Product(idFromStore, name, price, listPrice, 'Walmart', img, url);
                 });
                 return {
