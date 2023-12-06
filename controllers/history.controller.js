@@ -43,11 +43,55 @@ var HistoryController = {
             HistoryController.escribirArchivo(data);
         });
     },
-    getHistory: (userID) => {
-
+    getHistory: async (userID, callback) => {
+        try{
+            var data = await HistoryController.leerArchivo();
+            if(data && data.length > 0){
+                data = JSON.parse(data);
+                var index = data.findIndex(item => item.userID === userID);
+                if(index !== -1){
+                    var history = data[index].history;
+                    callback({
+                        success: true,
+                        history: history
+                    });
+                }
+                else{
+                    callback({
+                        success: false,
+                        error: 'Sin historial'
+                    });
+                }
+            }
+            else{
+                callback({
+                    success: false,
+                    error: 'Sin historial'
+                });
+            }
+        }
+        catch(error) {
+            callback({
+                success: false,
+                error: error
+            });
+        }
     },
-    deleteHistory: (userID) => {
-        
+    deleteHistory: (userID,callback) => {
+        HistoryController.leerArchivo().then((data) => {
+            if(data && data.length > 0){
+                data = JSON.parse(data).filter(item => item.userID !== userID);
+                HistoryController.escribirArchivo(data);
+                callback({
+                    success: true
+                });
+            }
+            else{
+                callback({
+                    success: true
+                });
+            }
+        });
     }
 }
 

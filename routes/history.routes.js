@@ -20,7 +20,9 @@ router.get('/get/:userID',  [
     }
     else{
         let userID = req.params.userID;
-        // Retorna el historial del usuario
+        HistoryController.getHistory(userID, (data) => {
+            res.json(data);
+        });
     }
 });
 
@@ -36,6 +38,9 @@ router.delete('/delete/:userID',  [
     }
     else{
         let userID = req.params.userID;
+        HistoryController.deleteHistory(userID, (data) => {
+            res.json(data);
+        });
         // Eliminar el historial del usuario
     }
 });
