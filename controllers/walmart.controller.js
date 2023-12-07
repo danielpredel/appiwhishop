@@ -50,21 +50,21 @@ var WalmartController = {
             }
         }
     },
-    searchById: async (itemId) => {
+    searchById: async (itemID) => {
         const params = {
             api_key: `${apiKey}`,
             type: "product",
-            item_id: `${itemId}`,
+            item_id: `${itemID}`,
             output: "json"
         };
         try{
-            var response = await axios.get('https://api.bluecartapi.com/request', { params });
+            const response = await axios.get('https://api.bluecartapi.com/request', { params });
             var data = response.data;
             var status = data?.request_info?.success;
             if(status === true){
                 var item_id = data?.product?.item_id;
                 if(item_id == itemID){
-                    var price = data?.buybox_winner?.price;
+                    var price = data?.product?.buybox_winner?.price;
                     if (price === undefined){
                         price = null;
                     }
@@ -77,14 +77,14 @@ var WalmartController = {
                 else{
                     return {
                         success: false,
-                        error: `Error al consultar producto con item_id: ${itemId}`
+                        error: `Error al consultar producto con item_id: ${itemID}`
                     }
                 }
             }
             else{
                 return {
                     success: false,
-                    error: `Error al consultar producto con item_id: ${itemId}`,
+                    error: `Error al consultar producto con item_id: ${itemID}`,
                     info: data
                 }
             }
@@ -92,7 +92,7 @@ var WalmartController = {
         catch(error) {
             return {
                 success: false,
-                error: error
+                error: error.message
             };
         }
     }

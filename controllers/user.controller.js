@@ -115,6 +115,54 @@ var UserController = {
                 }
             }
         }));
+    },
+    readFile: () => {
+        return new Promise((resolve, reject) => {
+            fs.readFile(files.usersFile, 'utf8', (error, data) => {
+                if(error){
+                    reject(error);
+                }
+                else{
+                    resolve(data);
+                }
+            });
+        });
+    },
+    getEmail: async (id) => {
+        try{
+            var data = await UserController.readFile();
+            if(data && data.length > 0){
+                data = JSON.parse(data);
+                var user = data.filter(user => user.id == id);
+                // console.log(data);
+                // console.log(index);
+                if(user.length > 0){
+                    // console.log(data[index]);
+                    return {
+                        success: true,
+                        email: user[0].email
+                    };
+                }
+                else{
+                    return {
+                        success: false,
+                        error: `No se encontro el usuario con id: ${id}`
+                    };
+                }
+            }
+            else{
+                return {
+                    success: false,
+                    error: 'Sin Usuarios'
+                };
+            }
+        }
+        catch(error){
+            return {
+                success: false,
+                error: error.message
+            }
+        }
     }
 }
 

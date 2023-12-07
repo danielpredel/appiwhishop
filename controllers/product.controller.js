@@ -26,13 +26,15 @@ var ProductController = {
             else if(amazonStatus === true){
                 return {
                     success: true,
-                    products: amazonResults.products
+                    products: amazonResults.products,
+                    walmartError: walmartResults.error
                 }
             }
             else if(walmartStatus === true){
                 return {
                     success: true,
-                    products: walmartResults.products
+                    products: walmartResults.products,
+                    amazonError: amazonResults.error
                 }
             }
             else{
@@ -55,23 +57,45 @@ var ProductController = {
     trackProducts: async () => {
         try{
             var data = await ProductController.leerArchivo();
+            var backup = data;
             if(data && data.length > 0){
                 data = JSON.parse(data);
-                // map(async como en lists.getLists)
-                var results = data.map(element => {
-                    if(element.store == 'Amazon'){
-                        console.log('ASIN: ' + element.idFromStore + ', Precio:' + element.price);
-                        // crear nuevo producto con price si es success es true
-                        // searchById de amazon
-                    }
-                    else if(element.store == 'Walmart'){
-                        console.log('itemID: ' + element.idFromStore + ', Precio:' + element.price);
-                        // searchById de walmart
-                    }
-                });
+                backup = JSON.parse(backup);
+                var results = await Promise.all(
+                    data.map(async element => {
+                        if(element.store == 'Amazon'){
+                            var resp = await AmazonController.searchById(element.idFromStore);
+                            if(resp.success === true){
+                                var newPrice = resp.price;
+                                if(newPrice != null){
+                                    element.price = newPrice;
+                                }
+                                return element;
+                            }
+                            else{
+                                return element;
+                            }
+                        }
+                        else if(element.store == 'Walmart'){
+                            var resp = await WalmartController.searchById(element.idFromStore);
+                            if(resp.success === true){
+                                var newPrice = resp.price;
+                                if(newPrice != null){
+                                    element.price = newPrice;
+                                }
+                                return element;
+                            }
+                            else{
+                                return element;
+                            }
+                        }
+                    })
+                );
+                // ProductController.escribirArchivo(backup);
                 return {
                     success: true,
-                    products: data
+                    oldProducts: backup,
+                    newProducts: results
                 };
             }
             else{
